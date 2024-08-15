@@ -3,7 +3,7 @@ DGAT-cancer was a method for predicting cancer driver genes. It integrates the p
 DGAT-cancer
 DGAT-cancer was a method for predicting cancer driver genes. It integrates the predicted pathogenicity of the somatic mutations (together with germline variants in the healthy population) with a topological network of gene expression in tumor tissues, and considering the expression levels in tumor and paracancerous tissues while employing 24 distinct features to predict novel cancer drivers.
 
-Algorithm
+# Algorithm
 1. Using Laplacian Score to select features
 We used an unsupervised method, the Laplacian Score, to select features that have high power to preserve the local geometric structure of the features space. The detailed steps for the application of Laplacian Score in feature selection were as follows:
 (1) A network  was constructed to connect all m candidate genes (). For each pair of genes, we calculated the Euclidean distance,  between their feature vectors ( is the feature vector of gene , and  is the feature vector of gene ). Based on the Euclidean distance, if gene  is among the top  (here we set ) of the nearest genes to gene , or the gene  is among the top  of the nearest gene to the gene  (), we set the connection between  and  as . Otherwise, .
