@@ -1,17 +1,17 @@
 library(ggplot2)
-load("/golden_list.RData")
-load("/cancer_list.RData")
-load("/golden_ppi_gene.RData")
+load("./golden_list.RData")
+load("./cancer_list.RData")
+load("./golden_ppi_gene.RData")
 cancer <- c("BLCA","BRCA","COAD","GBM","HNSC","LUAD","STAD")
 ############### Figure 3A ####################
-Fig3A_xx3 <- readRDS("/home/yanglab_data3/user/yangsy/review_DGAT-cancer/plot/github_pre/Fig3A_xx3.rds")
+Fig3A_xx3 <- readRDS("./Fig3A_xx3.rds")
 text_df <- Fig3A_xx3[[1]]
 text_df$Method <- factor(text_df$Method,levels = c("DGAT-cancer","OncodriveCLUSTL","OncodriveFML","MutSigCV","DiffMut"))
 text_df$y <- (7-as.numeric(text_df$Method))*0.07+0.6
 text_df$label <- paste(text_df$Method,sprintf("%0.3f", text_df$value),sep = "—")
 Fig3A_xx3[[2]]$cancer <- factor(Fig3A_xx3[[2]]$cancer,levels = cancer)
 Fig3A_xx3[[2]]$method <- factor(Fig3A_xx3[[2]]$method,levels = levels(text_df$Method))
-# emf(file = "/Figure-3A.emf",width = 12,height = 7)#14,6;12,8
+# emf(file = "./Figure-3A.emf",width = 12,height = 7)#14,6;12,8
 ggplot(Fig3A_xx3[[2]],aes(x = recall,y=precision))+
   geom_text(data = text_df[!is.na(text_df$value),],aes(x = 0.96,y=y,label=label,color=Method),hjust=1)+
   guides(color="none")+
