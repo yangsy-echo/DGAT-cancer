@@ -414,3 +414,24 @@ ggplot(Figure_4C[[2]][Figure_4C[[2]]$variable%in%select_fea2[20:24],],aes(x = ty
         axis.text.y = element_text(size = 11,colour = "black"),legend.box.spacing = unit(-5,"mm"),
         axis.title = element_text(size = 11.5,colour = "black"))
 dev.off()  
+############### Figure 5C LGG & GBM Survival analysis####################
+library(survival)
+library(survminer)
+library(ggplot2)
+data <- read.csv(file="data/GBM_LGG_xiantao.csv")
+data$OS_time <- as.numeric(data$OS_time)
+data$EEF1A1 <- as.numeric(data$EEF1A1)
+data$event <- ifelse(data$OS_event=="Dead",1,0)
+median <- median(data$EEF1A1)
+data$group <- ifelse(data$EEF1A1 > median,"High","Low")
+data$OS_time <- data$OS_time/30
+fit <- survfit(Surv(OS_time, event) ~ group, data = data)
+print(fit)
+fit_cox <- coxph(Surv(OS_time, event) ~ group, data = data)
+print(fit_cox)
+cox.zph(fit_cox)
+ggsurvplot(fit = fit, data = data, fun = "pct",
+           palette = c("#E64B35","#4DBBD5", "#00A087", "#3C5488", "#F39B7F"),
+           linetype = 1, pval = TRUE, 
+           censor = TRUE, censor.size = 7,
+           risk.table = FALSE, conf.int = FALSE)         
