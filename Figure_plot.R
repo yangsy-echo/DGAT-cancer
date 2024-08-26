@@ -312,6 +312,94 @@ ggboxplot(all_df[!is.na(all_df$risk),],x = "cancer",y="BYS",color = "risk",fill=
                      size=3.3)
 dev.off()
 ############### Figure 4C ####################
+# select_fea_num <- read.delim("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/select_fea_num", header=FALSE, row.names=1)
+# compare_list <- list()
+# for(i in 1:7){
+#   oncodriveFML <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/oncodriveFML/",cancer[i],"_oncodriveFML.tsv",sep = ""),header = T)
+#   oncodriveFML <- oncodriveFML[!is.na(oncodriveFML$SYMBOL),]
+#   oncodriveCLUSTL <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/oncodriveCLUSTL/",cancer[i],"_oncodriveCLUSTL.txt",sep = ""),header = T)
+#   oncodriveCLUSTL <- oncodriveCLUSTL[!is.na(oncodriveCLUSTL$SYMBOL),]
+#   mutsigCV <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/mutsigCV/",cancer[i],"_mutsigCV.txt",sep = ""),header = T)
+#   mutsigCV <- mutsigCV[!is.na(mutsigCV$gene),]
+#   TDAmut <- read.delim(paste("/home/yanglab_data3/user/yangsy/review_DGAT-cancer/other_method/TDAmut/",cancer[i],"_2.csv",sep = ""),header = T,sep=",")
+#   TDAmut <-TDAmut[is.na(TDAmut$X),]
+#   DiffMut <- read.delim(paste("/home/yanglab_data3/user/yangsy/review_DGAT-cancer/other_method/DiffMut/Differential-Mutation-Analysis-master/Output/",cancer[i],"_mut3-DiffMut.txt",sep = ""),header = T,sep=" ")
+#   DiffMut <- DiffMut[!is.na(DiffMut$protNames),]
+#   compare_list[[i]] <- cbind(data.frame(gene=rownames(cancer.list[[i]])),cancer.list[[i]][,as.numeric(select_fea_num[i,])])
+#   compare_list[[i]]$oncodriveFML <- oncodriveFML$Q_VALUE[match(compare_list[[i]]$gene,oncodriveFML$SYMBOL)]
+#   compare_list[[i]]$oncodriveCLUSTL <- oncodriveCLUSTL$Q_ANALYTICAL[match(compare_list[[i]]$gene,oncodriveCLUSTL$SYMBOL)]
+#   compare_list[[i]]$mutsigCV <- mutsigCV$q[match(compare_list[[i]]$gene,mutsigCV$gene)]
+#   compare_list[[i]]$TDAmut <- TDAmut$q[match(compare_list[[i]]$gene,TDAmut$X)]
+#   compare_list[[i]]$DiffMut <- DiffMut$q[match(compare_list[[i]]$gene,DiffMut$protNames)]
+# }
+# select_fea <- Reduce(union,sapply(cancer.list,colnames))
+# select_fea2 <- select_fea[-c(23,25,27)]
+# select_fea2 <- select_fea2[c(1:20,22,21,23,24)]
+# plot_df <- matrix(nrow = 9,ncol = 24)
+# rownames(plot_df) <- cancer[1:7]
+# colnames(plot_df) <- select_fea2
+
+# for(k in 1:7){
+#   xx <- compare_list[[k]]
+#   cols_to_fill <- c("oncodriveFML", "oncodriveCLUSTL", "mutsigCV", "TDAmut", "DiffMut")
+#   xx[cols_to_fill] <- lapply(xx[cols_to_fill], function(x) {
+#     x[is.na(x)] <- 1
+#     return(x)
+#   })
+#   xx$group <- (xx$oncodriveCLUSTL<0.05 | xx$oncodriveFML<0.05 | xx$mutsigCV<0.05 |xx$TDAmut<0.05|xx$DiffMut<0.05) & !(xx$gene%in%risk_list[[k]]$gene)
+#   xx$group2 <- xx$oncodriveCLUSTL>0.05 & xx$oncodriveFML>0.05 & xx$mutsigCV>0.05 & xx$TDAmut>0.05 & xx$TDAmut>0.05 & xx$gene%in%risk_list[[k]]$gene
+#   cat(cancer[k],"only predicted by other methods",sum(xx$group,na.rm = T),"\t","only predicted by DGAT-cancer",sum(xx$group2,na.rm = T),"\n")
+#   xx2 <- reshape2::melt(xx[!is.na(xx$group),c(-1,-22,-23,-24)],id.vars=c("group","group2"))
+#   xx2$type <- NA
+#   xx2$type[xx2$group] <- "only predicted by other methods"
+#   xx2$type[xx2$group2] <- "only predicted by DGAT-cancer"
+#   xx2 <- xx2[!is.na(xx2$type),]
+#   for(j in select_fea2){
+#     if(j%in%xx2$variable & (k!=7)){
+#       tt1 <- wilcox.test(xx2$value[xx2$variable==j & xx2$type=="only predicted by other methods"],xx2$value[xx2$variable==j & xx2$type=="only predicted by DGAT-cancer"],paired = F,alternative = "greater")
+#       tt2 <- wilcox.test(xx2$value[xx2$variable==j & xx2$type=="only predicted by other methods"],xx2$value[xx2$variable==j & xx2$type=="only predicted by DGAT-cancer"],paired = F,alternative = "less")
+#       plot_df[cancer[k],j] <- min(tt1$p.value,tt2$p.value)
+#     }else if(j%in%xx2$variable & (k==7)){
+#       test <- try(t.test(xx2$value[xx2$variable==j & xx2$type=="only predicted by other methods"],xx2$value[xx2$variable==j & xx2$type=="only predicted by DGAT-cancer"],paired = F,alternative = "greater"),TRUE)
+#       if("try-error"%in%class(test)){
+#         next
+#       }else{
+#         plot_df[cancer[k],j] <- test$p.value
+#       }
+#     }
+#   }
+#   plot_df[k,] <- p.adjust(plot_df[k,],method = "bonferroni")
+# }
+# plot_df2 <- reshape2::melt(plot_df)
+# plot_df2$label <- ifelse(plot_df2$value<0.0001,"***",ifelse(plot_df2$value<0.001,"**",ifelse(plot_df2$value<0.05,"*",NA)))
+
+# label <- sapply(select_fea2,function(x) strsplit(x,split = "_")[[1]][1])
+# label[c(9,11,13,14,20:24)] <- c("M-CAP","fathmm-MKL","integrated_fitCons","GERP++","JSD score","C score","uEMD-Ex","tumor_med","normal_med")
+
+# plot_df3 <- NULL
+# for(k in 1:7){
+#   xx <- compare_list[[k]]
+#   xx$group <- (xx$oncodriveCLUSTL<0.05 | xx$oncodriveFML<0.05 | xx$mutsigCV<0.05|xx$DiffMut<0.05|xx$TDAmut<0.05) & !(xx$gene%in%risk_list[[k]]$gene)
+#   xx$group2 <- xx$oncodriveCLUSTL>0.05 & xx$oncodriveFML>0.05 & xx$mutsigCV>0.05 & xx$DiffMut>0.05 & (xx$TDAmut>0.05 |is.na(xx$TDAmut))& xx$gene%in%risk_list[[k]]$gene
+#   cat(cancer[k],"only predicted by other methods",sum(xx$group,na.rm = T),"\t","only predicted by DGAT-cancer",sum(xx$group2,na.rm = T),"\n")
+#   xx2 <- reshape2::melt(xx[!is.na(xx$group),c(-1,-22,-23,-24)],id.vars=c("group","group2"))
+#   xx2$type <- NA
+#   xx2$type[xx2$group] <- "only predicted by other methods"
+#   xx2$type[xx2$group2] <- "only predicted by DGAT-cancer"
+#   xx2 <- xx2[!is.na(xx2$type) & (xx2$variable%in%select_fea2),]
+#   xx2$cancer <- cancer[k]
+#   plot_df3 <- rbind(plot_df3,xx2)
+# }
+# plot_df3$variable2 <- label[match(plot_df3$variable,names(label))]
+# plot_df3$variable2 <- factor(plot_df3$variable2,levels = label)
+# aggre_df3 <- plot_df2
+# aggre_df3$variable2 <- label[match(aggre_df3$Var2,names(label))]
+# aggre_df3$variable2 <- factor(aggre_df3$variable2,levels = label)
+# colnames(aggre_df3)[1] <- "cancer"
+# tt <- aggregate(value~variable2,data = plot_df3,function(x) max(x)*0.95)
+# aggre_df3$y <- tt$value[match(aggre_df3$variable2,tt$variable2)]
+
+Figure_4C <- list(aggre_df3,plot_df3) 
 readRDS(file="data/Figure_4C.RDS")
 ggplot(Figure_4C[[2]][Figure_4C[[2]]$variable%in%select_fea2[20:24],],aes(x = type,y=value))+
   geom_boxplot(aes(fill=type),width=0.6,outlier.size = .7)+
