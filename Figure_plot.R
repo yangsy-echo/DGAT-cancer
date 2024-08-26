@@ -214,3 +214,19 @@ ggboxplot(all_df[!is.na(all_df$risk),],x = "cancer",y="BYS",color = "risk",fill=
                      size=3.3)
 dev.off()
 ############### Figure 4B ####################
+
+############### Figure 4C ####################
+readRDS(file="data/Figure_4C.RDS")
+ggplot(Figure_4C[[2]][Figure_4C[[2]]$variable%in%select_fea2[20:24],],aes(x = type,y=value))+
+  geom_boxplot(aes(fill=type),width=0.6,outlier.size = .7)+
+  geom_jitter(aes(fill=type),position = position_jitterdodge(.4),shape = 21,size=.7,alpha=.8)+
+  geom_text(data = Figure_4C[[1]][Figure_4C[[1]]$variable2%in%label[20:24],],aes(x = 1.5,y=y,label=label),color="red",size=5.5)+
+  facet_grid(variable2~cancer,scales = "free_y")+
+  labs(x = "",y="score",fill = "")+
+  scale_fill_manual(values = c("#FF8981","#00C678"),labels=c("genes missed by other methods","genes missed by DAGT-cancer"))+
+  theme_bw()+
+  theme(axis.text.x = element_blank(),legend.position = "bottom",
+        strip.background = element_rect(fill = "white",colour = "grey"),strip.text = element_text(size = 11,face = "bold"),
+        axis.text.y = element_text(size = 11,colour = "black"),legend.box.spacing = unit(-5,"mm"),
+        axis.title = element_text(size = 11.5,colour = "black"))
+dev.off()  
