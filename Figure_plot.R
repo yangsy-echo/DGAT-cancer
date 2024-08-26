@@ -214,7 +214,103 @@ ggboxplot(all_df[!is.na(all_df$risk),],x = "cancer",y="BYS",color = "risk",fill=
                      size=3.3)
 dev.off()
 ############### Figure 4B ####################
+# MutSigCV_g <- list()
+# oncoFML_g <- list()
+# oncoCLUSTL_g <- list()
+# DiffMut_g <- list()
+# TDAmut_g <- list()
 
+# show_com <- data.frame(cancer=cancer, oncodriveFML_p=1, oncodriveCLUSTL_p=1, mutsigCV_p=1, DiffMut_g=1, DTAmut_g=1)
+
+# for(i in 1:7){
+#   prop <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/prop_result/pre/", cancer[i], "_prop_union_p_value.txt", sep=""), header=TRUE)
+#   oncodriveFML <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/oncodriveFML/", cancer[i], "_oncodriveFML.tsv", sep=""), header=TRUE)
+#   oncodriveFML <- oncodriveFML[!is.na(oncodriveFML$SYMBOL), ]
+#   oncodriveFML$BYS <- prop$pp[match(oncodriveFML$SYMBOL, prop$gene)]
+#   oncodriveFML$risk <- oncodriveFML$Q_VALUE < 0.05
+#   oncoFML_g[[i]] <- oncodriveFML
+#   cat("FML:", length(unique(oncodriveFML$GENE_ID[which(oncodriveFML$Q_VALUE < 0.05)])), "\t")
+  
+#   oncodriveCLUSTL <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/oncodriveCLUSTL/", cancer[i], "_oncodriveCLUSTL.txt", sep=""), header=TRUE)
+#   oncodriveCLUSTL <- oncodriveCLUSTL[!is.na(oncodriveCLUSTL$SYMBOL), ]
+#   oncodriveCLUSTL$BYS <- prop$pp[match(oncodriveCLUSTL$SYMBOL, prop$gene)]
+#   oncodriveCLUSTL$risk <- oncodriveCLUSTL$Q_ANALYTICAL < 0.05
+#   oncoCLUSTL_g[[i]] <- oncodriveCLUSTL
+#   cat("CLUSTL:", length(unique(oncodriveCLUSTL$SYMBOL[which(oncodriveCLUSTL$Q_ANALYTICAL < 0.05)])), "\t")
+  
+#   mutsigCV <- read.delim(paste("/home/yanglab_data3/user/yangsy/DGAT-cancer/evaluation/mutsigCV/", cancer[i], "_mutsigCV.txt", sep=""), header=TRUE)
+#   mutsigCV <- mutsigCV[!is.na(mutsigCV$gene), ]
+#   mutsigCV$BYS <- prop$pp[match(mutsigCV$gene, prop$gene)]
+#   mutsigCV$risk <- mutsigCV$q < 0.05
+#   MutSigCV_g[[i]] <- mutsigCV
+#   cat("MutSig:", length(unique(mutsigCV$gene[which(mutsigCV$q < 0.05)])), "\n")
+  
+#   TDAmut <- read.delim(paste("/home/yanglab_data3/user/yangsy/review_DGAT-cancer/other_method/TDAmut/", cancer[i], "_2.csv", sep=""), header=TRUE, sep=",")
+#   TDAmut <- TDAmut[!is.na(TDAmut$X), ]
+#   TDAmut$BYS <- prop$pp[match(TDAmut$X, prop$gene)]
+#   TDAmut$risk <- TDAmut$q0 < 0.05
+#   TDAmut_g[[i]] <- TDAmut
+#   cat("TDAmut:", length(unique(TDAmut$X[which(TDAmut$q0 < 0.05)])), "\n")
+  
+#   DiffMut <- read.delim(paste("/home/yanglab_data3/user/yangsy/review_DGAT-cancer/other_method/DiffMut/Differential-Mutation-Analysis-master/Output/", cancer[i], "_mut3-DiffMut.txt", sep=""), header=TRUE, sep=" ")
+#   DiffMut <- DiffMut[!is.na(DiffMut$protNames), ]
+#   DiffMut$BYS <- prop$pp[match(DiffMut$protNames, prop$gene)]
+#   DiffMut$risk <- DiffMut$qVal < 0.05
+#   DiffMut_g[[i]] <- DiffMut
+#   cat("DiffMut:", length(unique(DiffMut$protNames[which(DiffMut$qVal < 0.05)])), "\n")
+  
+#   t1 <- wilcox.test(oncodriveFML$BYS[which(oncodriveFML$Q_VALUE < 0.05, arr.ind=TRUE)], oncodriveFML$BYS[which(oncodriveFML$Q_VALUE >= 0.05, arr.ind=TRUE)], alternative="greater", conf.int=TRUE, na.rm=TRUE)
+#   t2 <- wilcox.test(oncodriveCLUSTL$BYS[which(oncodriveCLUSTL$Q_ANALYTICAL < 0.05, arr.ind=TRUE)], oncodriveCLUSTL$BYS[which(oncodriveCLUSTL$Q_ANALYTICAL >= 0.05, arr.ind=TRUE)], alternative="greater", conf.int=TRUE, na.rm=TRUE)
+#   t3 <- wilcox.test(mutsigCV$BYS[which(mutsigCV$q < 0.05, arr.ind=TRUE)], mutsigCV$BYS[which(mutsigCV$q >= 0.05, arr.ind=TRUE)], alternative="greater", conf.int=TRUE, na.rm=TRUE)
+  
+#   if (all(is.na(TDAmut$BYS[which(TDAmut$q0 < 0.05, arr.ind=TRUE)]))) {
+#     t4 <- NA
+#     cat("TDAmut all NA \n")
+#   } else {
+#     t4 <- wilcox.test(TDAmut$BYS[which(TDAmut$q0 < 0.05, arr.ind=TRUE)], TDAmut$BYS[which(TDAmut$q0 >= 0.05, arr.ind=TRUE)], alternative="greater", conf.int=TRUE, na.rm=TRUE)
+#   }
+#   t5 <- wilcox.test(DiffMut$BYS[which(DiffMut$qVal < 0.05, arr.ind=TRUE)], DiffMut$BYS[which(DiffMut$qVal >= 0.05, arr.ind=TRUE)], alternative="greater", conf.int=TRUE, na.rm=TRUE)
+  
+#   show_com$oncodriveFML_p[i] <- t1$p.value
+#   show_com$oncodriveCLUSTL_p[i] <- t2$p.value
+#   show_com$mutsigCV_p[i] <- t3$p.value
+#   show_com$TDAmut_p[i] <- ifelse(is.na(t4), NA, t4$p.value)
+#   show_com$DiffMut_p[i] <- t5$p.value
+# }
+
+# names(MutSigCV_g) <- names(oncoFML_g) <- names(oncoCLUSTL_g) <- names(DiffMut_g) <- names(TDAmut_g) <- names(DiffMut_g) <- cancer[1:7]
+# mutsigCV_df <- ldply(MutSigCV_g,data.frame)
+# mutsigCV_df$group <- "MutSigCV"
+# oncoCLUSTL_df <- ldply(oncoCLUSTL_g,data.frame)
+# oncoCLUSTL_df$group <- "OncodriveCLUSTL"
+# oncoFML_df <- ldply(oncoFML_g,data.frame)
+# oncoFML_df$group <- "OncodriveFML"
+# DiffMut_df <- ldply(DiffMut_g,data.frame)
+# DiffMut_df$group <- "DiffMut"
+# TDAmut_df <- ldply(TDAmut_g,data.frame)
+# TDAmut_df$group <- "TDAmut"
+
+# all_df <- rbind(mutsigCV_df[,c(".id","BYS","group","risk")],oncoFML_df[,c(".id","BYS","group","risk")],
+#                 oncoCLUSTL_df[,c(".id","BYS","group","risk")],TDAmut_df[,c(".id","BYS","group","risk")],
+#                 DiffMut_df[,c(".id","BYS","group","risk")])
+# colnames(all_df)[1] <- "cancer"
+# all_df <- all_df[all_df$group != "TDAmut",]
+all_df <- readRDS("/home/yanglab_data3/user/yangsy/review_DGAT-cancer/plot/github/Figure_4B.RDS")
+
+ggboxplot(all_df[!is.na(all_df$risk),],x = "cancer",y="BYS",color = "risk",fill="risk",alpha=.5)+
+  facet_wrap(group~.,nrow =5,strip.position = "right")+
+  ylim(0,0.011)+
+  labs(x = "", y = "PP score in DGAT-cancer")+
+  scale_color_manual(values = c("#6F69AC","#FD6F96"),labels=c("q>0.05","q<0.05"))+
+  scale_fill_manual(values = c("#6F69AC","#FD6F96"),labels=c("q>0.05","q<0.05"))+
+  theme(panel.background = element_rect(fill = "white",colour = "grey"),
+        strip.text = element_text(size = 11,face = "bold"),
+        axis.text = element_text(size = 11,colour = "black"),legend.position = "bottom",
+        axis.title = element_text(size = 11.5),legend.key = element_rect(fill = "white",colour = "white"),
+        legend.title = element_blank(), legend.box.spacing = unit(-.5,"cm"))+
+  stat_compare_means(aes(group=risk),method = "wilcox.test",paired = F,label = "p.format",label.y = 0.01,
+                     size=3.3)
+dev.off()
 ############### Figure 4C ####################
 readRDS(file="data/Figure_4C.RDS")
 ggplot(Figure_4C[[2]][Figure_4C[[2]]$variable%in%select_fea2[20:24],],aes(x = type,y=value))+
